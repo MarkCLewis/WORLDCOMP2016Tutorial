@@ -24,6 +24,12 @@ class Unemployment @Inject() (dbConfigProvider: DatabaseConfigProvider) extends 
     Ok("Code generated.")
   }
   
+  def deleteTables = Action.async {
+    implicit val db = dbConfig.db
+    val f = models.PopulateTables.deleteTables
+    f.map(s => Ok(s))
+  }
+
   def populateTables = Action.async {
     implicit val db = dbConfig.db
     val f = models.PopulateTables.populateTables
