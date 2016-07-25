@@ -2,19 +2,54 @@
  * This template takes a single argument, a String containing a
  * message to display.
  *@
-@(message: String)
+@(message: String)(implicit request: RequestHeader)
 
 @*
  * Call the `main` template with two arguments. The first
  * argument is a `String` with the title of the page, the second
  * argument is an `Html` object containing the body of the page.
  *@
-@main("Welcome to Play") {
+@main("Twitter Stream") {
 
-    @*
-     * Get an `Html` object by calling the built-in Play welcome
-     * template and passing a `String` message.
-     *@
-    @play20.welcome(message, style = "Scala")
+<!-- The following was taken from the Chapter 2 example in Reactive Web Applications -->
+    <div id="tweets"></div>
+
+    <script type="text/javascript">
+
+        function appendTweet(text) {
+            var tweet = document.createElement("p");
+            var message = document.createTextNode(text);
+            tweet.appendChild(message);
+            document.getElementById("tweets").appendChild(tweet);
+        }
+
+        function connect(attempt) {
+            var connectionAttempt = attempt;
+            var tweetSocket = new WebSocket("@routes.Application.tweets().webSocketURL()");
+            tweetSocket.onmessage = function (event) {
+                console.log(event);
+                var data = JSON.parse(event.data);
+                console.log(event.data);
+                appendTweet(data.text);
+            };
+            tweetSocket.onopen = function() {
+                connectionAttempt = 1;
+                console.log("subscribing");
+                tweetSocket.send('"subscribe"');
+            };
+            tweetSocket.onclose = function() {
+                if (connectionAttempt <= 3) {
+                    appendTweet("WARNING: Connection with the server lost, attempting to reconnect. Attempt number " + connectionAttempt);
+                    setTimeout(function() {
+                        connect(connectionAttempt + 1);
+                    }, 5000);
+                } else {
+                    alert("The connection with the server was lost. Please try again later. Sorry about that.");
+                }
+            };
+        }
+
+        connect(1);
+    </script>
 
 }
