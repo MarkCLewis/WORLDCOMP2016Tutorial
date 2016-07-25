@@ -22,8 +22,8 @@ class FinancialDataActor extends Actor {
   def receive = {
     case RequestFits(s, sd, sm, sy, ed, em, ey) =>
         println("Got request")
-        // TODO - build URL
-        dataLoader forward DataLoader.LoadURL("http://chart.finance.yahoo.com/table.csv?s=GOOG&a=5&b=24&c=2016&d=6&e=24&f=2016&g=d&ignore=.csv")
+        val url = s"http://chart.finance.yahoo.com/table.csv?s=$s&a=$sm&b=$sd&c=$sy&d=$em&e=$ed&f=$ey&g=d&ignore=.csv"
+        dataLoader forward DataLoader.LoadURL(url)
     case Ping => dataLoader forward Ping
   }
 }

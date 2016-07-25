@@ -22,13 +22,16 @@ object Queries {
       } yield data).result
     }
   }
-
-  def dataMatchingMultipleSeriesStrings(terms: Seq[String])(implicit db: Database, ec: ExecutionContext): Future[Seq[Tables.DataRow]] = {
+  
+  case class SeriesData(seriesTitle: String, year:Int, period:Int, value:Double)
+  def dataMatchingMultipleSeriesStrings(terms: Seq[String])(implicit db: Database, ec: ExecutionContext): Future[Seq[SeriesData]] = {
     db.run {
       (for {
         series <- Tables.Series if series.seriestitle like terms.mkString("%", "%", "%")
         data <- Tables.Data if data.seriesid === series.seriesid
-      } yield data).result
+      } yield (series.seriestitle, data)).result
+    }.map { seq =>
+      seq.map { case (t, d) => SeriesData(t, d.year, d.period, d.value) }
     }
   }
 }

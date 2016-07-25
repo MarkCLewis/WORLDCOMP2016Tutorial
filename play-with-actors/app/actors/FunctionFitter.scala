@@ -13,7 +13,9 @@ class FunctionFitter extends Actor {
       for(row <- data) pnts.add(row(0), row(4))
       val fitter = PolynomialCurveFitter.create(1)
       val coeff = fitter.fit(pnts.toList())
-      sender ! "Fit is "+coeff.mkString(" + ")
+      sender ! "Fit is "+(for((c, i) <- coeff.zipWithIndex) yield {
+        c+(if(i<1) "" else if(i<2) "x" else s"x^$i")
+      }).mkString(" + ")
   }
 }
 
