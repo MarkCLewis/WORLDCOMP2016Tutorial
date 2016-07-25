@@ -1,13 +1,15 @@
 package modules
 
+import com.google.inject.AbstractModule
+
 import actors.FinancialDataActor
 import akka.actor.ActorSystem
 import akka.actor.Props
 import javax.inject.Inject
-import com.google.inject.AbstractModule
+import play.api.libs.ws.WSClient
 
-class Actors @Inject() (actorSystem: ActorSystem) extends ApplicationActor {
-  actorSystem.actorOf(Props[FinancialDataActor].withDispatcher("control-aware-dispatcher"),"FinancialData")
+class Actors @Inject() (actorSystem: ActorSystem, ws: WSClient) extends ApplicationActor {
+  actorSystem.actorOf(Props[FinancialDataActor],"FinancialData")
 }
 
 trait ApplicationActor

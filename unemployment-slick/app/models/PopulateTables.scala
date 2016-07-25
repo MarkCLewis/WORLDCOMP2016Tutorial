@@ -18,9 +18,9 @@ object PopulateTables {
 //         populateSeries 
         // populateData("sql/la.data.11.California")
         // populateData("sql/la.data.12.Colorado"), 
-        populateData("sql/la.data.35.Nevada") 
+//        populateData("sql/la.data.35.Nevada") 
         // populateData("sql/la.data.39.NewYork"), 
-//         populateData("sql/la.data.51.Texas")
+         populateData("sql/la.data.51.Texas")
         ))
     } yield {
       println("Futures complete.")
