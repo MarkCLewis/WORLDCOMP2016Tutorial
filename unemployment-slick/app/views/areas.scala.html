@@ -1,0 +1,11 @@
+@* areas Template File *@
+@(areas: Seq[Tables.AreasRow])
+
+@main("Areas") {
+	<table border="1">
+	<tr><th>Code</th><th>Description</th></tr>
+	@for(a <- areas) {
+		<tr><td>@{a.areacode}</td><td>@{a.areatext}</td></tr>
+	}
+	</table>
+}

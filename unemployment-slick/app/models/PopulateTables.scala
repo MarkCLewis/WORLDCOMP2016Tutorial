@@ -13,13 +13,14 @@ object PopulateTables {
 
   def populateTables(implicit db: Database, ec: ExecutionContext) = {
     for {
-      adds <- Future.sequence(Seq( //                  populateAreas
-        // populateSeries 
+      adds <- Future.sequence(Seq( 
+//        populateAreas
+//         populateSeries 
         // populateData("sql/la.data.11.California")
         // populateData("sql/la.data.12.Colorado"), 
         populateData("sql/la.data.35.Nevada") 
         // populateData("sql/la.data.39.NewYork"), 
-        // populateData("sql/la.data.51.Texas")
+//         populateData("sql/la.data.51.Texas")
         ))
     } yield {
       println("Futures complete.")
@@ -53,7 +54,7 @@ object PopulateTables {
       val ret = db.run {
         Tables.Series ++= lines.toSeq.map { line =>
           val parts = line.split("\t").map(_.trim)
-          Tables.SeriesRow(parts(0), parts(1)(0), parts(2), parts(7), parts(8).toInt, parts(9).drop(1).toInt, parts(10).toInt, parts(11).drop(1).toInt)
+          Tables.SeriesRow(parts(0), parts(1)(0), parts(2), parts(6), parts(8).toInt, parts(9).drop(1).toInt, parts(10).toInt, parts(11).drop(1).toInt)
         }
       }
       ret.foreach { _ =>

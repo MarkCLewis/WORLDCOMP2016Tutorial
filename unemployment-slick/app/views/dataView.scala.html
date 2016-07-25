@@ -1,0 +1,11 @@
+@* dataView Template File *@
+@(data: Seq[Tables.DataRow])
+
+@main("Data") {
+	<table border="1">
+	<tr><th>Code</th><th>Year</th><th>Month</th><th>Value</th></tr>
+	@for(d <- data) {
+		<tr><td>@{d.seriesid}</td><td>@{d.year}</td><td>@{d.period}</td><td>@{d.value}</td></tr>
+	}
+	</table>
+}
