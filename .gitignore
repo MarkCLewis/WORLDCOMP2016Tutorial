@@ -16,6 +16,7 @@ target
 
 # sbt specific
 .cache
+.cache-main
 .history
 .lib/
 dist/*

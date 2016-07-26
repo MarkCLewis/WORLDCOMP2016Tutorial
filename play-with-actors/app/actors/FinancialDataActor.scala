@@ -7,16 +7,9 @@ import play.api.libs.ws.WSClient
 import javax.inject.Inject
 
 class FinancialDataActor extends Actor {
-  private var dataLoader: ActorRef = _
-  private var csvParser: ActorRef = _
-  private var functionFitter: ActorRef = _
-  
-  override def preStart(): Unit = {
-	  functionFitter = context.actorOf(Props[FunctionFitter],"FunctionFitter")    
-    csvParser = context.actorOf(Props(new CSVParser(functionFitter)),"CSVParser")    
- 		dataLoader = context.actorOf(Props(new DataLoader(csvParser)),"DataLoader")    
-    super.preStart()
-  }
+  val functionFitter = context.actorOf(Props[FunctionFitter],"FunctionFitter")    
+  val csvParser = context.actorOf(Props(new CSVParser(functionFitter)),"CSVParser")    
+	val dataLoader = context.actorOf(Props(new DataLoader(csvParser)),"DataLoader")    
   
   import FinancialDataActor._
   def receive = {

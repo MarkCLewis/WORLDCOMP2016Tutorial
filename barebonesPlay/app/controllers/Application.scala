@@ -5,10 +5,12 @@ import play.api.mvc.Action
 import play.api.mvc.Results._
 import javax.inject.Inject
 import play.twirl.api.Html
+import scala.concurrent.Future
+import play.api.libs.concurrent.Execution.Implicits._
 
 class Application @Inject() extends Controller {
-  def index = Action {
-	  Ok(views.html.index("Reactive Programming"))
+  def index = Action.async {
+	  Future { Ok(views.html.index("Reactive Programming")) }
   }
   
   def add(a: Int, b: Int) = Action {

@@ -52,14 +52,12 @@ object TwitterStreamer {
       source.body.
       scan("")((acc, curr) => if (acc.contains("\r\n")) curr.utf8String else acc + curr.utf8String)
 						.filter(_.contains("\r\n"))
+//						.map(_.trim)
+//						.runWith(Sink.actorRef(out, "Done"))
 						.runForeach { tweet =>
               Logger.info(tweet)
               out ! tweet.trim
 						}
-//      runForeach { tweet =>
-//        Logger.info(tweet.utf8String)
-//        out ! Json.toJson(tweet.utf8String)
-//      }
     }
     
     Logger.info("Adding subscriber")
@@ -85,10 +83,8 @@ object TwitterStreamer {
 
       ws.url(url)
         .sign(OAuthCalculator(consumerKey, requestToken))
-        .withQueryString("track" -> "cat").stream().foreach { s => 
-          stream = Some(s) 
-//          implicit val materializer = ActorMaterializer()
-//          stream.foreach(_.body.runForeach(bs => println(bs.decodeString("UTF-8"))))
+        .withQueryString("track" -> "vegas").stream().foreach { s => 
+          stream = Some(s)
       }
 
     } getOrElse {
