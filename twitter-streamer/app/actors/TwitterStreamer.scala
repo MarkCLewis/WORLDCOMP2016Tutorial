@@ -55,7 +55,7 @@ object TwitterStreamer {
       Logger.info(source.toString())
       source.runForeach { tweet =>
               Logger.info(tweet)
-              out ! tweet.trim
+              subscribers.foreach(_ ! tweet.trim)
 						}
     }
     
