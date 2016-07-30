@@ -56,7 +56,7 @@ object TwitterStreamer {
 //						.runWith(Sink.actorRef(out, "Done"))
 						.runForeach { tweet =>
               Logger.info(tweet)
-              out ! tweet.trim
+              subscribers.foreach(_ ! tweet.trim)
 						}
     }
     
