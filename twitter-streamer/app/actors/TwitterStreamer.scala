@@ -14,6 +14,10 @@ import play.api.libs.ws.StreamedResponse
 import akka.stream.scaladsl.Sink
 import akka.stream.ActorMaterializer
 import scala.util.Try
+import akka.stream.scaladsl.Flow
+import akka.util.ByteString
+import akka.NotUsed
+import akka.stream.scaladsl.Source
 
 /**
  * This code was taken from 
@@ -39,7 +43,7 @@ class TwitterStreamer(out: ActorRef) extends Actor {
 object TwitterStreamer {
 
 //  private var broadcastEnumerator: Option[Enumerator[JsObject]] = None
-  private var stream: Option[StreamedResponse] = None
+  private var stream: Option[Source[String, _]] = None
 
   private val subscribers = new ArrayBuffer[ActorRef]()
 
@@ -49,12 +53,7 @@ object TwitterStreamer {
     // Connect to stream
     stream.foreach { source =>
       Logger.info(source.toString())
-      source.body.
-      scan("")((acc, curr) => if (acc.contains("\r\n")) curr.utf8String else acc + curr.utf8String)
-						.filter(_.contains("\r\n"))
-//						.map(_.trim)
-//						.runWith(Sink.actorRef(out, "Done"))
-						.runForeach { tweet =>
+      source.runForeach { tweet =>
               Logger.info(tweet)
               out ! tweet.trim
 						}
@@ -84,7 +83,9 @@ object TwitterStreamer {
       ws.url(url)
         .sign(OAuthCalculator(consumerKey, requestToken))
         .withQueryString("track" -> "vegas").stream().foreach { s => 
-          stream = Some(s)
+          stream = Some(s.body.
+            scan("")((acc, curr) => if (acc.contains("\r\n")) curr.utf8String else acc + curr.utf8String)
+						.filter(_.contains("\r\n")))
       }
 
     } getOrElse {
